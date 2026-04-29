@@ -1,0 +1,147 @@
+# HackRF RX Bridge — Release Notes
+
+## v0.99.1 — beta (2026-04-28)
+
+- **Settings dialog** added. Same shape as the WSJT-X bridge's
+  Settings dialog, minus TX VGA / Mode picker / TX audio device
+  picker (none of which apply to an RX-only app). Covers RX LNA /
+  RX VGA / RX AMP, bias tee toggle, IF offset, PPM correction,
+  RX audio device picker, software RX audio gain (Windows WASAPI
+  compensation), Linrad output gain, I/Q balance correction
+  toggle with live α / φ / native rejection diagnostics.
+- Settings → I/Q balance toggle and Linrad gain apply live; HackRF
+  gain changes are pushed to the chip via libhackrf without
+  interrupting the stream. RX audio device changes restart playback
+  on the new device immediately.
+
+## v0.99.0 — first beta (2026-04-28)
+
+First release of the **HackRF RX Bridge** — a Windows-only companion app
+that lets a HackRF One add wideband Q65 (QMAP) reception alongside an
+existing real radio (IC-905, IC-705, FT-991A, etc.) without disrupting
+the real radio's TX setup.
+
+### Use case
+
+Your IC-905 (or any rig with a normal CAT/audio interface) handles TX
+and narrowband RX as it always has, controlled by WSJT-X via Hamlib. A
+HackRF — fed from a splitter on the same antenna, or a separate RX-only
+antenna — runs alongside the real rig as a **wideband observer**. This
+bridge:
+
+- Listens to **WSJT-X UDP messages** (port 2237 by default) for the
+  current dial frequency, mode, and transmit state
+- Tunes the HackRF to match
+- Demodulates SSB to **VB-Audio Virtual Cable Line 1** so WSJT-X's
+  "Sound input (RX)" sees the HackRF audio
+- Streams **96 kHz IQ to QMAP** (UDP 50004) for wideband Q65 decode
+- Stops HackRF RX during WSJT-X TX so the local-TX bleed-through can't
+  slam the LNA, and (optionally) drives the HackRF bias tee on/off
+  to match WSJT-X's TX state for transverter sequencer power
+
+WSJT-X CAT continues to control the real radio. WSJT-X's "Sound
+output (TX)" still goes to the rig's USB audio interface as before.
+Only the **RX audio path** is replaced with bridge-fed audio from the
+HackRF.
+
+### Installation note (read first)
+
+The installer is **not code-signed** and is **64-bit only**
+(Windows 10 / 11 x64). On first launch on a fresh Windows machine you
+will see Microsoft Defender SmartScreen warn:
+
+> Windows protected your PC.
+> Microsoft Defender SmartScreen prevented an unrecognized app from
+> starting.
+
+Click **More info → Run anyway**. You should only see this once per
+binary. The same warning may appear once on the installed
+`hackrf-rx-bridge.exe`; handle it the same way.
+
+### What you'll need to install separately
+
+- **HackRF One USB driver (WinUSB)** — the installer offers to launch
+  Zadig at the end to set this up automatically. Skip if `hackrf_info`
+  on your machine already prints firmware/serial without an error.
+- **VB-Audio Virtual Cable** — <https://vb-audio.com/Cable/>. Provides
+  the `Line 1` virtual sound device the bridge feeds.
+- **WSJT-X 2.7+** — for FT8 / FT4 / Q65 narrowband decoding.
+- **QMAP 0.6+** — for wideband Q65. Set Network input = enabled, UDP
+  port = 50004.
+
+### WSJT-X configuration
+
+| Setting | Value |
+|---|---|
+| Radio | your real rig, via Hamlib (Settings → Radio → choose your rig and CAT method — *not* a `Hamlib NET rigctl` pointing at this bridge) |
+| PTT method | CAT |
+| Sound output (TX) | the real rig's USB audio interface |
+| Sound input (RX) | `Line 1 (Virtual Audio Cable)` |
+| Settings → Reporting → "Accept UDP requests" | **enabled**, port `2237` |
+
+That last item is required — without it WSJT-X doesn't broadcast its
+status messages and the bridge has no way to know the dial frequency.
+
+Launch order: **real rig → WSJT-X → HackRF RX Bridge → QMAP**.
+
+### Features
+
+- **WSJT-X UDP listener** (port 2237) for dial freq, mode, and TX
+  state. Same protocol GridTracker / JTAlert / Log4OM use; works
+  cross-machine.
+- **HackRF RX path** at 2 Msps with platform-aware IF offset (0 on
+  Windows by default).
+- **SSB demod** via Hilbert phasing (~35 dB opposite-sideband
+  rejection) to VB-Cable Line 1 for WSJT-X.
+- **96 kHz IQ wideband stream** to QMAP via UDP 50004 (Linrad
+  protocol), with the same `(-1)^n·conj()` transform and adaptive
+  I/Q balance correction as the WSJT-X bridge — image rejection
+  past −40 dBc on broadband signals.
+- **RX-blanking on WSJT-X TX**: HackRF RX is stopped while WSJT-X
+  is keying the real rig, so the local-TX bleed-through doesn't
+  hammer the LNA.
+- **Bias-tee follows WSJT-X TX**: if you have the HackRF bias tee
+  enabled (manual toggle), the 3.3 V on the RF port follows
+  WSJT-X's transmit state for transverter sequencer / LNA power.
+- **GUI status panel**: dial freq from WSJT-X, mode, WSJT-X UDP-link
+  state, HackRF status, RX peak meter, waterfall.
+- **Settings** in this 0.99.0 release are **INI / CLI only** —
+  edit `%APPDATA%\Roaming\n6nu\HackRF RX Bridge.ini` or pass flags
+  on the command line. A full Settings dialog GUI ships in 0.99.1.
+
+### Command-line options
+
+- `--rx-lna <gain>` — RX LNA, 0–40 dB step 8
+- `--rx-vga <gain>` — RX VGA, 0–62 dB step 2
+- `--rx-amp` — enable HackRF AMP (+14 dB wideband, worsens IMD)
+- `--bias-tee` — enable HackRF bias tee
+- `--if-offset <Hz>` — IF offset
+- `--ppm <ppm>` — frequency correction
+- `--rx-device <name>` — audio output device (default Line 1)
+- `--linrad-gain <dB>` — Linrad/QMAP digital output gain (default 20)
+- `--wsjtx-port <port>` — WSJT-X UDP listener port (default 2237)
+- `--no-gui` — headless mode
+- `--console` — open a debug console with full stderr log
+
+`--help` shows the full set.
+
+### Reporting
+
+Send observations / decodes / bug reports to
+**<n6nu@arrl.net>**. Useful info to include:
+
+- HackRF serial / firmware version (`hackrf_info`)
+- Windows version
+- WSJT-X version + which real rig you're using
+- The bridge log: relaunch with `hackrf-rx-bridge.exe --console`,
+  reproduce the issue, copy/paste the console output
+- For QMAP issues, also `qmap.ini` and a wideband-waterfall
+  screenshot
+
+### License
+
+Copyright (C) 2026 **Andreas Junge, N6NU** &lt;<n6nu@arrl.net>&gt;.
+Licensed under the **GNU General Public License v3 or later** —
+see [`LICENSE`](LICENSE). Bundled third-party components are
+documented in [`THIRD_PARTY_LICENSES.md`](THIRD_PARTY_LICENSES.md).
+**No warranty.** Install and run at your own risk.
