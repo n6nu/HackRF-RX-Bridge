@@ -1,5 +1,41 @@
 # HackRF RX Bridge — Release Notes
 
+## v0.99.2 — beta (2026-04-30)
+
+Feature-parity release with the SDRplay sibling, plus shared GUI code
+via Phase 1b refactor.
+
+- **Transverter offset** for IF-transverter setups. New Settings →
+  "Transverter offset" field (signed MHz). The SDR is tuned to
+  *(WSJT-X dial + offset)* while the GUI, WSJT-X, QMAP, and the
+  LinradServer header all keep showing the operating dial.
+  Example: dial 10368 MHz, offset −10224 MHz, HackRF actually tunes
+  to 144 MHz. CLI: `--transverter-offset <MHz>`. INI key:
+  `radio/transverter_offset_hz`.
+- **Manual SDR frequency override.** Settings checkbox + freq field;
+  decouples the bridge from the WSJT-X dial. Useful for QMAP-priority
+  observation when activity spans more than 90 kHz around the dial.
+  WSJT-X narrowband decode only works when WSJT-X dial = manual freq.
+  Bold orange banner under the dial display when active. CLI:
+  `--manual-freq <MHz>`. INI keys: `radio/manual_freq_override`,
+  `radio/manual_freq_hz`.
+- **Periodic streaming-stats log line.** Every 5 seconds the bridge
+  writes one diagnostic line: `[Stats] RX <N> samples in 5s …,
+  peak |IQ|=<X> (<Y> dBFS), last freq update <ms> ms ago` so a tester
+  can answer "is the SDR streaming?" and "is WSJT-X feeding freq
+  updates?" from one screenshot.
+- **Frequency display now sourced from the bridge's actual operating
+  freq** rather than WSJT-X UDP. Populates correctly at startup
+  (from the last persisted INI value or manual-override key) before
+  WSJT-X has broadcast a single status message, and respects the
+  manual-override mode.
+- **High-contrast IF readout** under the dial display when transverter
+  offset is non-zero — shows the actual SDR tune freq in bold red.
+- **Phase 1b refactor**: `RxMainWindow` and `RxSettingsDialog` now
+  live in `bridge-core/` and are shared with the RTL-SDR and SDRplay
+  sibling apps. Future GUI features land once and propagate to all
+  three.
+
 ## v0.99.1 — beta (2026-04-28)
 
 - **Settings dialog** added. Same shape as the WSJT-X bridge's

@@ -14,12 +14,31 @@ Author: **Andreas Junge, N6NU** &lt;<n6nu@arrl.net>&gt;.
 
 ---
 
-## Latest beta — v0.99.1
+## Latest beta — v0.99.2
 
-Download: **[hackrf-rx-bridge-0.99.1-setup.exe](hackrf-rx-bridge-0.99.1-setup.exe)**
+Download: **[hackrf-rx-bridge-0.99.2-setup.exe](hackrf-rx-bridge-0.99.2-setup.exe)**
 
-Full per-version notes, system requirements and known limitations
-are in [`RELEASE_NOTES.md`](RELEASE_NOTES.md).
+What's new in v0.99.2 — feature parity with the SDRplay sibling:
+
+- **Transverter offset** for IF-transverter setups (HF transverters,
+  microwave-IF transverters at 144 / 432 / 1296 MHz, etc.). Settings
+  → "Transverter offset" field (signed MHz). The HackRF tunes to
+  *(WSJT-X dial + offset)* while the GUI, WSJT-X, and QMAP all keep
+  showing the operating dial. CLI: `--transverter-offset <MHz>`.
+- **Manual SDR frequency override.** Settings checkbox + freq field;
+  decouples the bridge from the WSJT-X dial. Useful for QMAP-priority
+  observation when activity spans more than 90 kHz around the dial.
+  CLI: `--manual-freq <MHz>`.
+- **Periodic streaming-stats log line** every 5 seconds —
+  `[Stats] RX <N> samples in 5s …, peak |IQ|=<X> (<Y> dBFS), last freq update <ms> ms ago`.
+- **Frequency display sourced from the bridge's actual operating
+  freq** — populates correctly at startup before WSJT-X broadcasts.
+- **High-contrast IF readout** under the dial display when transverter
+  offset is non-zero.
+- **Phase 1b refactor**: GUI classes now shared with the RTL-SDR and
+  SDRplay sibling apps via `bridge-core/`.
+
+Full per-version notes are in [`RELEASE_NOTES.md`](RELEASE_NOTES.md).
 
 ### First-launch SmartScreen warning
 
