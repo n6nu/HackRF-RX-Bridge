@@ -1,6 +1,6 @@
 # HackRF RX Bridge — Release Notes
 
-## v1.0.0 — first stable (2026-05-02)
+## v1.0.0 — stable (2026-05-02)
 
 Promoted out of beta. RX-only HackRF observer alongside a real radio
 for TX has been verified end-to-end on 2 m. The 0.99.x line ends

@@ -14,7 +14,7 @@ Author: **Andreas Junge, N6NU** &lt;<n6nu@arrl.net>&gt;.
 
 ---
 
-## Latest release — v1.0.0 (first stable)
+## Latest release — v1.0.0 (stable)
 
 Download: **[hackrf-rx-bridge-1.0.0-setup.exe](hackrf-rx-bridge-1.0.0-setup.exe)**
 
