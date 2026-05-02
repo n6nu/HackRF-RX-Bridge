@@ -14,9 +14,26 @@ Author: **Andreas Junge, N6NU** &lt;<n6nu@arrl.net>&gt;.
 
 ---
 
-## Latest beta — v0.99.3
+## Latest beta — v0.99.4
 
-Download: **[hackrf-rx-bridge-0.99.3-setup.exe](hackrf-rx-bridge-0.99.3-setup.exe)**
+Download: **[hackrf-rx-bridge-0.99.4-setup.exe](hackrf-rx-bridge-0.99.4-setup.exe)**
+
+**Multi-instance support.** Run two bridges side-by-side — different
+WSJT-X / QMAP instances, no shared state. New `--instance <name>`
+CLI flag namespaces the INI / window title; new **Settings → "Linrad
+TCP port"** / **"Linrad UDP port"** rows let two bridges feed two
+QMAPs without colliding. See RELEASE_NOTES.md for the full
+multi-instance walkthrough.
+
+Drop-in upgrade from v0.99.3.
+
+---
+
+## v0.99.3 — Spectrum waterfall toggle
+
+The View menu / Ctrl+W toggles the spectrum waterfall display.
+
+---
 
 What's new in v0.99.2 — feature parity with the SDRplay sibling:
 

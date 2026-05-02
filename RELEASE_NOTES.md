@@ -1,5 +1,24 @@
 # HackRF RX Bridge — Release Notes
 
+## v0.99.4 — multi-instance support (multi-band ops) (2026-05-02)
+
+Run two bridges side-by-side — different WSJT-X / QMAP instances,
+no shared state.
+
+- New `--instance <name>` CLI flag namespaces the INI file, window
+  title, and taskbar entry. `hackrf-rx-bridge.exe --instance 70cm`
+  reads/writes `HackRF RX Bridge - 70cm.ini`.
+- New **Settings → "Linrad TCP port"** + **"Linrad UDP port"**
+  spinboxes (defaults 49812 / 50004). Increment per bridge instance
+  for multi-QMAP setups. CLI: `--linrad-tcp-port`,
+  `--linrad-udp-port`. Take effect on next launch.
+
+See RTL-SDR v0.99.8 notes for a full multi-instance walkthrough.
+HackRF-side device-serial picker (for two HackRFs on one machine)
+lands in a future version bump.
+
+Drop-in upgrade from v0.99.3.
+
 ## v0.99.3 — spectrum waterfall toggle (2026-05-02)
 
 The built-in spectrum / waterfall display can now be turned off from
