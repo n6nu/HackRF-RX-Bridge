@@ -14,9 +14,17 @@ Author: **Andreas Junge, N6NU** &lt;<n6nu@arrl.net>&gt;.
 
 ---
 
-## Latest beta — v0.99.4
+## Latest release — v1.0.0 (first stable)
 
-Download: **[hackrf-rx-bridge-0.99.4-setup.exe](hackrf-rx-bridge-0.99.4-setup.exe)**
+Download: **[hackrf-rx-bridge-1.0.0-setup.exe](hackrf-rx-bridge-1.0.0-setup.exe)**
+
+Promoted out of beta. RX-only HackRF observer alongside a real
+radio for TX, verified end-to-end on 2 m. Cumulative since v0.99.4
+adds the bridge-core waterfall span fix.
+
+---
+
+### v0.99.4 — Multi-instance support
 
 **Multi-instance support.** Run two bridges side-by-side — different
 WSJT-X / QMAP instances, no shared state. New `--instance <name>`
