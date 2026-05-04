@@ -1,5 +1,31 @@
 # HackRF RX Bridge — Release Notes
 
+## v1.0.1 — opt-in CAT server for WSJT-X Doppler tracking (2026-05-04)
+
+Adds the same CAT server pattern that landed in `pluto-rx-bridge`,
+`rtlsdr-rx-bridge`, and the rest of the family. With WSJT-X
+**Rig = Hamlib NET rigctl** pointed at this bridge's port, Doppler
+tracking commands corrected frequencies directly to the bridge —
+HackRF tunes, QMAP centre freq follows.
+
+- New rigctld-compatible TCP server on port **4537**. Default OFF
+  so the bridge stays a passive UDP observer in the common case
+  (WSJT-X driving a real radio).
+- Toggle via Settings dialog ("CAT server" checkbox + port) or
+  `--cat` / `--cat-port <n>` on the CLI. Restart bridge to take
+  effect.
+- Auto-detect UDP mute: when a CAT client is actually connected,
+  WSJT-X UDP Status freq updates are silenced. When no CAT client
+  is connected, the bridge falls back to UDP cleanly.
+- Live source indicator in the window title:
+  `HackRF RX Bridge v1.0.1 — UDP` /
+  `— UDP (CAT idle)` / `— CAT (n)`.
+- Picks up the bridge-core CatServer data-mode-PTT fixes
+  (`ptt_type=0x1`, `has_set_ptt=1` etc.) so WSJT-X PKTUSB / PKTLSB
+  Test PTT works.
+
+INI compatible with v1.0.0. Drop-in upgrade.
+
 ## v1.0.0 — stable (2026-05-02)
 
 Promoted out of beta. RX-only HackRF observer alongside a real radio
