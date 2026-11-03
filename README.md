@@ -1,14 +1,21 @@
 # HackRF RX Bridge — Beta Releases
 
-Windows installer downloads for the **HackRF RX Bridge** — a Qt6
-C++ application that adds wideband Q65 (QMAP) reception to a station
-already running a real radio (IC-905, IC-705, FT-991A, etc.) for TX.
+Windows installer downloads for the **HackRF RX Bridge** — a Qt6 C++
+application that adds wideband Q65 reception for **WS-MAP** /
+**EME65** to a station already running a real radio (IC-905, IC-705,
+FT-991A, etc.) for TX.
 
-The bridge listens to **WSJT-X UDP** for the dial frequency, tunes
-the HackRF to match, demodulates SSB to **VB-Cable Line 1** for
-WSJT-X RX audio, and streams **96 kHz IQ to QMAP** for wideband Q65
-decode. Your real rig keeps doing TX (and narrowband RX, if you
-prefer). No interference with your existing CAT / audio setup.
+The bridge listens to **WS UDP** for the dial frequency, tunes the
+HackRF to match, demodulates SSB to **VB-Cable Line 1** for WS RX
+audio, and streams **wideband IQ to WS-MAP** (96 kHz by default,
+selectable up to 256 kHz) for wideband Q65 decode. Your real rig
+keeps doing TX (and narrowband RX, if you prefer). No interference
+with your existing CAT / audio setup.
+
+The WS suite — **WS**, **WS-MAP** and **EME65** — lives at
+<https://wsjt-x-improved.sourceforge.io>, which is where most of this work went.
+
+<sub>Also works with WSJT-X, QMAP and MAP65.</sub>
 
 Author: **Andreas Junge, N6NU** &lt;<n6nu@arrl.net>&gt;.
 
